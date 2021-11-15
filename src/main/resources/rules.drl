@@ -1,57 +1,40 @@
-/*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
-*/
+
 
 package com.sample;
 
-global java.util.Set controlSet;
 
-rule "will execute per each Measurement having ID color"
-no-loop
-activation-group "report"
-when
-	Measurement( id == "color", $colorVal : val )
-then
-	controlSet.add($colorVal);
-end
 
 import com.sample.Server
 rule "Check Server Configuration"
-  activation-group "sample"
+//  activation-group "sample"
+  salience 99
   when
-  $server : Server( processors < 2 || memory<=1024 || diskspace <= 2048)
+  $server : Server((map.containsKey("sample") && map.get("sample")<99) && (processors < 2 || memory<=1024 || diskspace <= 2048))
   then
   $server.setValid(false);
-  System.out.println("Server1 "+ $server.getName() + " configuration does not meet requirements!");
+  System.out.println( $server.getName() + " configuration1 does not meet requirements!");
 end
 
 import com.sample.Server
 rule "Check Server Configuration2"
   activation-group "sample"
+  salience 98
   when
   $server : Server( processors < 2 || memory<=3024 || diskspace <= 3048)
   then
+  $server.getMap().put("sample",98);
+  update($server);
   $server.setValid(false);
-  System.out.println("Server2 "+ $server.getName() + " configuration does not meet requirements!");
+  System.out.println( $server.getName() + " configuration2 does not meet requirements!");
 end
 
 import com.sample.Server
 rule "Check Server Configuration3"
-  activation-group "sample2"
+  //activation-group "sample"
+  salience 97
   when
-  $server : Server( processors < 2 || memory<=3024 || diskspace <= 3048)
+  $server : Server( (map.get("sample")!=null && map.get("sample")<97) && (processors < 2 || memory<=3024 || diskspace <= 3048))
   then
   $server.setValid(false);
-  System.out.println("Server3 "+ $server.getName() + " configuration does not meet requirements!");
+  System.out.println($server.getName() + " configuration3 does not meet requirements!");
 end

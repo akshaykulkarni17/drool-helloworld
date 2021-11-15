@@ -17,6 +17,7 @@ package com.sample;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -41,59 +42,10 @@ import org.slf4j.LoggerFactory;
 public class RuleTest {
     static final Logger LOG = LoggerFactory.getLogger(RuleTest.class);
 
+
     @Test
     public void test() {
         KieServices kieServices = KieServices.Factory.get();
-
-        KieContainer kContainer = kieServices.getKieClasspathContainer();
-        Results verifyResults = kContainer.verify();
-        for (Message m : verifyResults.getMessages()) {
-            LOG.info("{}", m);
-        }
-
-        LOG.info("Creating kieBase");
-        KieBase kieBase = kContainer.getKieBase();
-
-        LOG.info("There should be rules: ");
-        for ( KiePackage kp : kieBase.getKiePackages() ) {
-            for (Rule rule : kp.getRules()) {
-                LOG.info("kp " + kp + " rule " + rule.getName());
-            }
-        }
-
-        LOG.info("Creating kieSession");
-        KieSession session = kieBase.newKieSession();
-
-        LOG.info("Populating globals");
-        Set<String> check = new HashSet<String>();
-        session.setGlobal("controlSet", check);
-
-        LOG.info("Now running data");
-
-        Measurement mRed= new Measurement("color", "red");
-        session.insert(mRed);
-        session.fireAllRules();
-
-        Measurement mGreen= new Measurement("color", "green");
-        session.insert(mGreen);
-        session.fireAllRules();
-
-        Measurement mBlue= new Measurement("color", "blue");
-        session.insert(mBlue);
-        session.fireAllRules();
-
-        LOG.info("Final checks");
-
-        assertEquals("Size of object in Working Memory is 3", 3, session.getObjects().size());
-        assertTrue("contains red", check.contains("red"));
-        assertTrue("contains green", check.contains("green"));
-        assertTrue("contains blue", check.contains("blue"));
-
-    }
-
-    @Test
-    public void test2() {
-        KieServices kieServices = KieServices.Factory.get();
         KieContainer kContainer = kieServices.getKieClasspathContainer();
         LOG.info("Creating kieBase");
         KieBase kieBase = kContainer.getKieBase();
@@ -106,11 +58,11 @@ public class RuleTest {
         LOG.info("Creating kieSession");
         KieSession session = kieBase.newKieSession();
         LOG.info("Now running data");
-        Server s1 = new Server("rhel7",2,24,48);
+        Server s1 = new Server("server1",2,24,48,new HashMap<>());
         session.insert(s1);
         session.fireAllRules();
         assertTrue(s1.isValid());
-        Server s2 = new Server("rhel8",2,2048,4096);
+        Server s2 = new Server("server2",2,2048,4096,new HashMap<>());
         session.insert(s2);
         session.fireAllRules();
         assertTrue(s2.isValid());
