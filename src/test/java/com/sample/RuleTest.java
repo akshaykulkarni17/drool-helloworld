@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.time.SessionPseudoClock;
@@ -58,13 +59,16 @@ public class RuleTest {
         LOG.info("Creating kieSession");
         KieSession session = kieBase.newKieSession();
         LOG.info("Now running data");
-        Server s1 = new Server("server1",2,24,48,new HashMap<>());
+        Server s1 = new Server("server1",2,2004,4008,new HashMap<>());
         session.insert(s1);
         session.fireAllRules();
         assertTrue(s1.isValid());
-        Server s2 = new Server("server2",2,2048,4096,new HashMap<>());
-        session.insert(s2);
-        session.fireAllRules();
-        assertTrue(s2.isValid());
+        TreeMap<Integer,Integer> t = new TreeMap<>();
+        int x=t.ceilingKey(1);
+        t.get(x);
+//        Server s2 = new Server("server2",2,248,496,new HashMap<>());
+//        session.insert(s2);
+//        session.fireAllRules();
+//        assertTrue(s2.isValid());
     }
 }
