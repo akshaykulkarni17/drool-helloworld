@@ -15,30 +15,20 @@
 
 package com.sample;
 
-import static org.junit.Assert.*;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
-
-import org.drools.core.time.SessionPseudoClock;
 import org.junit.Test;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
-import org.kie.api.builder.Message;
-import org.kie.api.builder.Results;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashSet;
+import java.util.TreeMap;
+
+import static org.junit.Assert.assertTrue;
 
 public class RuleTest {
     static final Logger LOG = LoggerFactory.getLogger(RuleTest.class);
@@ -59,7 +49,7 @@ public class RuleTest {
         LOG.info("Creating kieSession");
         KieSession session = kieBase.newKieSession();
         LOG.info("Now running data");
-        Server s1 = new Server("server1",2,2004,4008,new HashMap<>());
+        Server s1 = new Server("server1",2,2004,4008,new HashSet<>());
         session.insert(s1);
         session.fireAllRules();
         assertTrue(s1.isValid());

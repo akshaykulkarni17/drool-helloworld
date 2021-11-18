@@ -1,34 +1,36 @@
 package com.sample;
 
 
-import java.util.Map;
+
+
+import java.util.Set;
 
 
 public class Server {
+
 
     public String name;
     public int processors;
     public int memory;
     public int diskspace;
     public boolean isValid=true;
-    public Map<String, Integer> map;
+    public Set<String> fired;
 
-    public Server(String name, int processors, int memory, int diskspace,Map<String, Integer> map) {
+    public Server(String name, int processors, int memory, int diskspace,Set<String> set) {
         this.name = name;
         this.processors = processors;
         this.memory = memory;
         this.diskspace = diskspace;
-        this.map = map;
+        this.fired = set;
     }
 
 
-
-    public Map<String, Integer> getMap() {
-        return map;
+    public Set<String> getFired() {
+        return fired;
     }
 
-    public void setMap(Map<String, Integer> map) {
-        this.map = map;
+    public void setFired(Set<String> fired) {
+        this.fired = fired;
     }
 
     public String getName() {

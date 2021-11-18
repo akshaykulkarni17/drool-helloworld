@@ -8,12 +8,10 @@ import com.sample.Server
 
 rule "Check Server Configuration"
   @activationGroup("sample")
-  @salience(99)
-  //@isSilent(true)
+  @silent(true)
   salience 99
   when
-  //$server : Server((map.containsKey(drools.getRule().getMetaData().get("activationGroup").toString()) && map.get(drools.getRule().getMetaData().get("activationGroup").toString())<Integer.parseInt(map.get(drools.getRule().getMetaData().get("salience").toString()))) && (processors < 2 || memory<=1024 || diskspace <= 2048))
-  $server : Server((map.containsKey("sample") && map.get("sample")<99) && (processors <= 2 || memory<=1024 || diskspace <= 2048))
+  $server : Server((!fired.contains("sample")) && (processors <= 2 || memory<=1024 || diskspace <= 2048))
   then
   $server.setValid(false);
   System.out.println( $server.getName() + " configuration1 does not meet requirements!");
@@ -21,30 +19,24 @@ end
 
 
 rule "Check Server Configuration2"
-  @activationGroup("sample")
-  @salience(98)
-  @isSilent("false")
   activation-group "sample"
   salience 98
   when
   $server : Server( processors < 2 || memory<=3024 || diskspace <= 3048)
   then
-  $server.getMap().put(drools.getRule().getMetaData().get("activationGroup").toString(),Integer.parseInt(drools.getRule().getMetaData().get("salience").toString()));
-  $server.getMap().put("sample",98);
+  $server.getFired().add(drools.getRule().getActivationGroup());
   update($server);
+  //$server.updateFired($server,drools.getRule().getActivationGroup())
   $server.setValid(false);
   System.out.println( $server.getName() + " configuration2 does not meet requirements!");
 end
 
 
 rule "Check Server Configuration3"
-  //@activationGroup("sample")
-  //@salience("97")
-  //@isSilent("true")
+  @activationGroup("sample")
   salience 97
   when
-  //$server : Server( (map.containsKey(drools.getRule().getMetaData().get("activationGroup")) && map.get(drools.getRule().getMetaData().get("activationGroup"))<map.get(drools.getRule().getMetaData().get("salience"))) && (processors < 2 || memory<=3024 || diskspace <= 3048))
-  $server : Server( (map.get("sample")!=null && map.get("sample")<97) && (processors < 2 || memory<=3024 || diskspace <= 3048))
+    $server : Server((!fired.contains("sample")) && (processors < 2 || memory<=3024 || diskspace <= 3048))
   then
   $server.setValid(false);
   System.out.println($server.getName() + " configuration3 does not meet requirements!");
