@@ -13,6 +13,10 @@ rule "Check Server Configuration"
   when
   $server : Server((!fired.contains("sample")) && (processors <= 2 || memory<=1024 || diskspace <= 2048))
   then
+  if(drools.getRule().getActivationGroup()!=null){
+    $server.getFired().add(drools.getRule().getActivationGroup());
+    update($server);
+  }
   $server.setValid(false);
   System.out.println( $server.getName() + " configuration1 does not meet requirements!");
 end
@@ -38,6 +42,8 @@ rule "Check Server Configuration3"
   when
     $server : Server((!fired.contains("sample")) && (processors < 2 || memory<=3024 || diskspace <= 3048))
   then
+  //$server.getFired().add(drools.getRule().getActivationGroup());
+  //update($server);
   $server.setValid(false);
   System.out.println($server.getName() + " configuration3 does not meet requirements!");
 end
